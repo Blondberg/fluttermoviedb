@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:moviedb/constants.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 
+import 'package:google_sign_in/google_sign_in.dart';
+
 class MyAddButton2 extends StatefulWidget {
   const MyAddButton2({Key? key}) : super(key: key);
 
@@ -22,6 +24,8 @@ class _MyAddButton2State extends State<MyAddButton2> {
 
   late LinearGradient gradient;
 
+  late GoogleSignIn _googleSignIn;
+
   @override
   void initState() {
     super.initState();
@@ -33,31 +37,49 @@ class _MyAddButton2State extends State<MyAddButton2> {
         green,
       ],
     );
+
+    _googleSignIn = GoogleSignIn(
+      scopes: [
+        'email',
+        'https://www.googleapis.com/auth/contacts.readonly',
+      ],
+    );
   }
 
-  double searchLeft = 10;
-  double searchTop = 10;
-  double addRight = 10;
-  double addTop = 10;
+  double searchLeft = 40;
+  double searchTop = 40;
+  double addRight = 0;
+  double addTop = 0;
 
   bool isOpened = false;
+
+  Future<void> _handleSignIn() async {
+    try {
+      await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+    }
+  }
 
   void _toggleOptions() {
     setState(() {
       isOpened = !isOpened;
       if (!isOpened) {
-        searchLeft = 10;
-        searchTop = 10;
+        print("Options close");
+        searchLeft = 40;
+        searchTop = 40;
       } else {
-        searchLeft = -40;
-        searchTop = -40;
+        print("Options open");
+
+        searchLeft = 0;
+        searchTop = 0;
       }
     });
     Future.delayed(Duration(milliseconds: 100), () {
       setState(() {
         if (!isOpened) {
-          addRight = 10;
-          addTop = 10;
+          addRight = 0;
+          addTop = 0;
         } else {
           addRight = -40;
           addTop = -40;
@@ -69,29 +91,10 @@ class _MyAddButton2State extends State<MyAddButton2> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      clipBehavior: Clip.none,
       children: [
-        PopupChoiceButton(
-          top: searchTop,
-          left: searchLeft,
-          height: 40,
-          width: 40,
-          gradient: gradient,
-          icon: "assets/icons/search.svg",
-        ),
-        PopupChoiceButton(
-          top: addTop,
-          right: addRight,
-          height: 40,
-          width: 40,
-          gradient: gradient,
-          icon: "assets/icons/add.svg",
-        ),
         GestureDetector(
-          onTap: _toggleOptions,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.elasticInOut,
+          onTap: _handleSignIn,
+          child: Container(
             height: height,
             width: width,
             decoration: BoxDecoration(
@@ -121,6 +124,24 @@ class _MyAddButton2State extends State<MyAddButton2> {
             ),
           ),
         ),
+        // PopupChoiceButton(
+        //   top: searchTop,
+        //   left: searchLeft,
+        //   height: 40,
+        //   width: 40,
+        //   gradient: gradient,
+        //   icon: "assets/icons/search.svg",
+        //   onTap: () => {print("Search")},
+        // ),
+        // PopupChoiceButton(
+        //   top: addTop,
+        //   right: addRight,
+        //   height: 40,
+        //   width: 40,
+        //   gradient: gradient,
+        //   icon: "assets/icons/add.svg",
+        //   onTap: () => {print("add")},
+        // ),
       ],
     );
   }
@@ -137,6 +158,7 @@ class PopupChoiceButton extends StatelessWidget {
     required this.icon,
     this.bottom,
     this.right,
+    required this.onTap,
   }) : super(key: key);
 
   final double? top;
@@ -147,6 +169,8 @@ class PopupChoiceButton extends StatelessWidget {
   final double width;
   final String icon;
   final LinearGradient gradient;
+
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -159,31 +183,34 @@ class PopupChoiceButton extends StatelessWidget {
       duration: const Duration(
         milliseconds: 800,
       ),
-      child: Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          gradient: gradient,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 4,
-              spreadRadius: 0,
-              color: Colors.black.withAlpha(25),
-            )
-          ],
-        ),
-        child: Center(
-          child: SimpleShadow(
-            color: Colors.black,
-            opacity: 0.60,
-            sigma: 1,
-            offset: const Offset(0, 0),
-            child: SvgPicture.asset(
-              icon,
-              height: 20,
-              width: 20,
-              color: Colors.white,
+      child: InkWell(
+        onTap: () => {print("TAPPING")},
+        child: Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            gradient: gradient,
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 4,
+                spreadRadius: 0,
+                color: Colors.black.withAlpha(25),
+              )
+            ],
+          ),
+          child: Center(
+            child: SimpleShadow(
+              color: Colors.black,
+              opacity: 0.60,
+              sigma: 1,
+              offset: const Offset(0, 0),
+              child: SvgPicture.asset(
+                icon,
+                height: 20,
+                width: 20,
+                color: Colors.white,
+              ),
             ),
           ),
         ),

@@ -14,8 +14,8 @@ class MyBotNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: size.width,
-      height: 57,
+      height: 70,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -27,39 +27,29 @@ class MyBotNavBar extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          IconButton(
-            onPressed: () => onNavPress(0),
-            icon: const Icon(
-              Icons.list_rounded,
-              size: 29,
-            ),
-          ),
-          SizedBox(
-            width: 60,
-            child: Center(
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: const [
-                  Positioned(
-                    top: -25,
-                    child: MyAddButton2(),
-                  )
-                ],
-              ),
-            ),
-          ),
-          IconButton(
-            onPressed: () => onNavPress(1),
-            icon: const Icon(
-              Icons.person_rounded,
-              size: 29,
-            ),
-          ),
-        ],
-      ),
+      child: const MyAddButton2(),
     );
   }
 }
+
+
+// Row(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           IconButton(
+//             onPressed: () => onNavPress(0),
+//             icon: const Icon(
+//               Icons.list_rounded,
+//               size: 29,
+//             ),
+//           ),
+//           MyAddButton2(),
+//           IconButton(
+//             onPressed: () => onNavPress(1),
+//             icon: const Icon(
+//               Icons.person_rounded,
+//               size: 29,
+//             ),
+//           ),
+//         ],
+//       ),
