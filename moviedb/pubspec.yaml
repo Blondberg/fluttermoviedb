@@ -37,6 +37,12 @@ dependencies:
   firebase_auth: ^3.3.19
   google_sign_in: ^5.3.3
   http: ^0.13.4
+  flutter_svg: ^1.1.1
+  simple_shadow: ^0.3.0
+  google_fonts: ^3.0.1
+  csv: ^5.0.1
+  path_provider: ^2.0.11
+
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +66,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+
+  assets:
+  - assets/icons/
+  - assets/csv/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
