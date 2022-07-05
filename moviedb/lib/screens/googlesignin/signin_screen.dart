@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:moviedb/screens/googlesignin/listdisplayscreen.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -164,6 +165,14 @@ class _SignInScreenState extends State<SignInScreen> {
                 ],
               ),
             ),
+            ElevatedButton(
+              child: const Text("to list view"),
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: ((context) => ListViewScreen(
+                        db: db,
+                        currentUser: user,
+                      )))),
+            )
           ],
         ),
       );
