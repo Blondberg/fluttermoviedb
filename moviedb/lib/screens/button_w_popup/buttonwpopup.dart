@@ -10,6 +10,26 @@ class ButtonWPopup extends StatefulWidget {
 class _ButtonWPopupState extends State<ButtonWPopup> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
+      body: Column(
+        children: [
+          Expanded(
+            child: SizedBox(),
+          ),
+          Container(
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(border: Border.all()),
+            height: 57,
+            width: double.infinity,
+            child: FloatingActionButton(
+              onPressed: () => {},
+              child: Icon(Icons.add_rounded),
+              elevation: 0,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
