@@ -22,35 +22,39 @@ class _ListViewScreenState extends State<ListViewScreen> {
   List<List<dynamic>> _data = [];
   List<List<dynamic>> items = [];
 
+  String currentList = "";
+
   void getLists() async {
     // get all the lists for the user
     final docRef =
         widget.db.collection("spreadsheetids").doc(widget.currentUser!.email);
     docRef.get().then((DocumentSnapshot doc) {
       final data = doc.data() as Map<String, dynamic>;
-      setState(() {
-        data.forEach((key, value) async {
-          http.Response response = await http.get(
-            Uri.parse("https://sheets.googleapis.com/v4/spreadsheets/$key"),
+
+      data.forEach((key, value) async {
+        http.Response response = await http.get(
+          Uri.parse("https://sheets.googleapis.com/v4/spreadsheets/$key"),
+          headers: await widget.currentUser!.authHeaders,
+        );
+        if (response.statusCode == 200) {
+          String sheetTitle =
+              jsonDecode(response.body)["sheets"][0]["properties"]["title"];
+          http.Response resp = await http.get(
+            Uri.parse(
+                "https://sheets.googleapis.com/v4/spreadsheets/$key/values/$sheetTitle"),
             headers: await widget.currentUser!.authHeaders,
           );
-          if (response.statusCode == 200) {
-            String sheetTitle =
-                jsonDecode(response.body)["sheets"][0]["properties"]["title"];
-            http.Response resp = await http.get(
-              Uri.parse(
-                  "https://sheets.googleapis.com/v4/spreadsheets/$key/values/$sheetTitle"),
-              headers: await widget.currentUser!.authHeaders,
-            );
-            var valuesJson = jsonDecode(resp.body)["values"];
-            List<List<dynamic>> valuesList = List.from(valuesJson);
-            _data = valuesList;
+          var valuesJson = jsonDecode(resp.body)["values"];
+          List<List<dynamic>> valuesList = List.from(valuesJson);
+          setState(() {
             items.clear();
+            currentList = value;
+            _data = valuesList;
             items.addAll(_data);
-          } else {
-            output = "error";
-          }
-        });
+          });
+        } else {
+          output = "error";
+        }
       });
     });
   }
@@ -61,7 +65,7 @@ class _ListViewScreenState extends State<ListViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("list view"),
+        title: Text(currentList),
       ),
       body: Center(
         child: Column(
@@ -75,7 +79,8 @@ class _ListViewScreenState extends State<ListViewScreen> {
                 itemBuilder: ((context, index) {
                   return Card(
                     child: ListTile(
-                      leading: Text(items[index][0].toString()),
+                      leading:
+                          Text(index.toString() + items[index][0].toString()),
                       title: Text(items[index][1].toString()),
                       trailing: Text(items[index][2].toString()),
                     ),
